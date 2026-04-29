@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Add Department</h1>
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Dept Name</label>
+                        <input class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dept Code</label>
+                        <input class="form-control" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shift</label>
+                        <select class="form-select" name="shift" required>
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100">Save Department</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Departments</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead><tr><th>Name</th><th>Code</th><th>Shift</th><th></th></tr></thead>
+                        <tbody>
+                            {% for dept in departments %}
+                            <tr>
+                                <td>{{ dept.name }}</td>
+                                <td>{{ dept.code }}</td>
+                                <td class="text-capitalize">{{ dept.shift }}</td>
+                                <td>
+                                    <form method="post" class="d-inline delete-form">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <input type="hidden" name="dept_id" value="{{ dept._id }}">
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4" class="text-center text-muted">No departments found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Admin Dashboard</h1>
+        <p class="text-muted mb-0">Manage academic data, generate timetable variants, and track approval status.</p>
+    </div>
+    <a href="{{ url_for('admin.generate') }}" class="btn btn-primary">Generate Timetable</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-xl">
+        <div class="card stat-card"><div class="card-body"><p class="text-muted mb-1">Total Faculty</p><h3>{{ faculty_count }}</h3></div></div>
+    </div>
+    <div class="col-md-4 col-xl">
+        <div class="card stat-card"><div class="card-body"><p class="text-muted mb-1">Total Rooms</p><h3>{{ room_count }}</h3></div></div>
+    </div>
+    <div class="col-md-4 col-xl">
+        <div class="card stat-card"><div class="card-body"><p class="text-muted mb-1">Total Subjects</p><h3>{{ subject_count }}</h3></div></div>
+    </div>
+    <div class="col-md-6 col-xl">
+        <div class="card stat-card"><div class="card-body"><p class="text-muted mb-1">Pending Approvals</p><h3>{{ pending_approvals }}</h3></div></div>
+    </div>
+    <div class="col-md-6 col-xl">
+        <div class="card stat-card"><div class="card-body"><p class="text-muted mb-1">Last Timetable Status</p><h3 class="text-capitalize">{{ last_status }}</h3></div></div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5">Quick Actions</h2>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.departments') }}">Manage Departments</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.faculty') }}">Manage Faculty</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.rooms') }}">Manage Rooms</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.subjects') }}">Manage Subjects</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.timeslots') }}">Manage Time Slots</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('admin.analytics') }}">View Analytics</a>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5">Recent Activity Log</h2>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead><tr><th>Semester</th><th>Status</th><th>Fitness</th><th>Generated On</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for item in recent_activity %}
+                    <tr>
+                        <td>{{ item.semester }}</td>
+                        <td><span class="badge status-{{ item.status }}">{{ item.status }}</span></td>
+                        <td>{{ item.fitness_score }}</td>
+                        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') if item.created_at else '-' }}</td>
+                        <td><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.timetable_view', variant_id=item.variant_id) }}">Open</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center text-muted">No recent activity yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

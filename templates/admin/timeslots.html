@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Add Time Slot</h1>
+                <form method="post" data-validate>
+                    <div class="mb-3"><label class="form-label">Day</label><select class="form-select" name="day">{% for day in days %}<option value="{{ day }}">{{ day }}</option>{% endfor %}</select></div>
+                    <div class="mb-3"><label class="form-label">Period Number</label><input class="form-control" type="number" name="period_number" min="1" max="8" required></div>
+                    <div class="row">
+                        <div class="col mb-3"><label class="form-label">Start Time</label><input class="form-control" type="time" name="start_time" required></div>
+                        <div class="col mb-3"><label class="form-label">End Time</label><input class="form-control" type="time" name="end_time" required></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label">Shift</label><select class="form-select" name="shift"><option value="morning">Morning</option><option value="evening">Evening</option></select></div>
+                    <div class="form-check mb-2"><input class="form-check-input fixed-slot-toggle" type="checkbox" name="is_fixed" id="fixed-slot"><label class="form-check-label" for="fixed-slot">Is Fixed Slot</label></div>
+                    <div class="mb-3 fixed-subject-wrapper d-none">
+                        <label class="form-label">Fixed Subject</label>
+                        <select class="form-select" name="fixed_subject_id">
+                            <option value="">Select Subject</option>
+                            {% for subject in subjects %}<option value="{{ subject._id }}">{{ subject.code }} - {{ subject.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100">Save Time Slot</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">Configured Time Slots</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead><tr><th>Day</th><th>Period</th><th>Time</th><th>Shift</th><th>Fixed</th><th></th></tr></thead>
+                        <tbody>
+                            {% for slot in slots %}
+                            <tr>
+                                <td>{{ slot.day }}</td>
+                                <td>{{ slot.period_number }}</td>
+                                <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                                <td>{{ slot.shift }}</td>
+                                <td>{{ 'Yes' if slot.is_fixed else 'No' }}</td>
+                                <td>
+                                    <form method="post" class="delete-form">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <input type="hidden" name="slot_id" value="{{ slot._id }}">
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="text-center text-muted">No time slots configured.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Visual Grid Preview</h2>
+                <div class="table-responsive">
+                    <table class="table timetable-table">
+                        <thead><tr><th>Period</th>{% for day in days %}<th>{{ day }}</th>{% endfor %}</tr></thead>
+                        <tbody>
+                            {% for period in range(1,9) %}
+                            <tr>
+                                <th>Period {{ period }}</th>
+                                {% for day in days %}
+                                <td>
+                                    {% set match = (slots|selectattr('day','equalto',day)|selectattr('period_number','equalto',period)|list) %}
+                                    {% if match %}{{ match[0].start_time }} - {{ match[0].end_time }}{% else %}<span class="text-muted">-</span>{% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

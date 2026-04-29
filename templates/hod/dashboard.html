@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 mb-4">HOD Dashboard</h1>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5">Pending Review</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead><tr><th>Dept</th><th>Semester</th><th>Generated On</th><th>Fitness</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    {% for item in pending %}
+                    <tr>
+                        <td>{{ departments.get(item.department_id|string).code if departments.get(item.department_id|string) else '-' }}</td>
+                        <td>{{ item.semester }}</td>
+                        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') if item.created_at else '-' }}</td>
+                        <td>{{ item.fitness_score }}</td>
+                        <td><span class="badge status-{{ item.status }}">{{ item.status }}</span></td>
+                        <td><a class="btn btn-sm btn-primary" href="{{ url_for('hod.review', variant_id=item._id) }}">Review</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted">No pending reviews.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5">Past Decisions</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead><tr><th>Dept</th><th>Semester</th><th>Generated On</th><th>Fitness</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for item in decisions %}
+                    <tr>
+                        <td>{{ departments.get(item.department_id|string).code if departments.get(item.department_id|string) else '-' }}</td>
+                        <td>{{ item.semester }}</td>
+                        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') if item.created_at else '-' }}</td>
+                        <td>{{ item.fitness_score }}</td>
+                        <td><span class="badge status-{{ item.status }}">{{ item.status }}</span></td>
+                        <td><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('hod.review', variant_id=item._id) }}">Open</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted">No decisions yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

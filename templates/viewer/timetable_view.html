@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">Approved Timetable</h1>
+        <p class="text-muted mb-0">{{ department.code if department else '-' }} | Semester {{ variant.semester }}</p>
+    </div>
+    <button class="btn btn-outline-secondary no-print" onclick="window.print()">Print</button>
+</div>
+<div class="table-responsive">
+    <table class="table timetable-table full-grid">
+        <thead><tr><th class="sticky-col">Period</th>{% for day in days %}<th>{{ day }}</th>{% endfor %}</tr></thead>
+        <tbody>
+            {% for period in periods %}
+            <tr>
+                <th class="sticky-col">Period {{ period }}<br><small>{{ period_times.get(period, '') }}</small></th>
+                {% for day in days %}
+                {% set cell = grid.get(period, {}).get(day) %}
+                <td class="{% if cell %}dept-{{ cell.department_code|lower }}{% endif %} {% if cell and conflict_map.get(cell.slot_id|string) %}conflict-cell{% endif %}" {% if cell and conflict_map.get(cell.slot_id|string) %}title="{{ conflict_map.get(cell.slot_id|string)|join(' | ') }}"{% endif %}>
+                    {% if cell %}
+                        <strong>{{ cell.subject_name }}</strong><br>{{ cell.faculty_name }}<br>{{ cell.room_code }}
+                    {% else %}
+                        <span class="text-muted">Empty</span>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

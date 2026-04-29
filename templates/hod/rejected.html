@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 mb-4">Rejected Timetables</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead><tr><th>Dept</th><th>Semester</th><th>Reason</th><th>Created On</th><th></th></tr></thead>
+                <tbody>
+                    {% for item in variants %}
+                    <tr>
+                        <td>{{ departments.get(item.department_id|string).code if departments.get(item.department_id|string) else '-' }}</td>
+                        <td>{{ item.semester }}</td>
+                        <td>{{ item.rejection_reason or '-' }}</td>
+                        <td>{{ item.created_at.strftime('%d %b %Y %H:%M') if item.created_at else '-' }}</td>
+                        <td><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('hod.review', variant_id=item._id) }}">View</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center text-muted">No rejected timetables.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# Database files
+*.db
+*.sqlite3
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
+
+# Generated exports
+static/exports/
+
+# Charts output (keep folder but ignore files)
+static/charts/*
+!static/charts/.gitkeep

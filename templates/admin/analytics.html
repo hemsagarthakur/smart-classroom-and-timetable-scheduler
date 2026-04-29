@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 analytics-header">
+    <div>
+        <h1 class="h3 mb-1">Analytics Dashboard</h1>
+        <p class="text-muted mb-0">Live timetable metrics derived from the latest selected or approved variant.</p>
+    </div>
+    <div class="analytics-summary text-end">
+        <div class="small text-muted">Current Fitness</div>
+        <div class="analytics-kpi">{{ analytics_data.summary.fitness }}</div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card analytics-mini-card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">Assignments</p>
+                <h2 class="mb-0">{{ analytics_data.summary.entries }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card analytics-mini-card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">Violations</p>
+                <h2 class="mb-0">{{ analytics_data.summary.violations }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card analytics-mini-card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">Variant Status</p>
+                <h2 class="mb-0 text-capitalize">{{ variant.status if variant else 'Unavailable' }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 analytics-grid">
+    <div class="col-xl-6">
+        <div class="card analytics-card analytics-card-violet h-100">
+            <div class="card-body">
+                <h2 class="analytics-card-title">Faculty workload (hours/week)</h2>
+                <div class="chart-wrap"><canvas id="facultyWorkloadChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card analytics-card analytics-card-cyan h-100">
+            <div class="card-body">
+                <h2 class="analytics-card-title">Room utilization (%)</h2>
+                <div class="chart-wrap"><canvas id="roomUtilizationChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card analytics-card analytics-card-rose h-100">
+            <div class="card-body">
+                <h2 class="analytics-card-title">Subject distribution</h2>
+                <div class="chart-wrap"><canvas id="subjectDistributionChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card analytics-card analytics-card-rose h-100">
+            <div class="card-body">
+                <h2 class="analytics-card-title">Conflict statistics</h2>
+                <div class="chart-wrap"><canvas id="conflictStatsChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+{{ super() }}
+<script>
+    window.analyticsPayload = {{ analytics_data|tojson }};
+</script>
+{% endblock %}

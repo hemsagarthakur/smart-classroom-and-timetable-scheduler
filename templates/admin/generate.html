@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h1 class="h4 mb-1">Generate Timetable</h1>
+                <p class="text-muted mb-0">Run the genetic algorithm to generate up to 5 timetable variants.</p>
+            </div>
+        </div>
+        <form method="post" id="generate-form" data-validate>
+            <div class="row align-items-end">
+                <div class="col-md-5 mb-3">
+                    <label class="form-label">Department</label>
+                    <select class="form-select" name="dept_id" id="generate-dept" required>
+                        <option value="">Select department</option>
+                        {% for dept in departments %}<option value="{{ dept._id }}">{{ dept.code }} - {{ dept.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Semester</label>
+                    <select class="form-select" name="semester" id="generate-semester" required>
+                        {% for sem in range(1,9) %}<option value="{{ sem }}">{{ sem }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button class="btn btn-primary w-100" id="generate-btn" type="submit" disabled>
+                        <span class="button-label">Generate Timetable</span>
+                        <span class="spinner-border spinner-border-sm d-none" id="generate-spinner"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div id="validation-box" class="alert alert-warning mt-3 d-none mb-0">
+            <strong>Validation Warnings</strong>
+            <ul id="validation-list" class="mb-0 mt-2"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

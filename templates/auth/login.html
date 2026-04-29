@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center align-items-center auth-page">
+    <div class="col-lg-10">
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-6">
+                <section class="card auth-hero h-100">
+                    <div class="card-body p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <span class="badge auth-badge mb-3">SIH 2028 Solution</span>
+                        <h1 class="display-6 fw-bold mb-3">Smart Classroom & Timetable Scheduler</h1>
+                        <p class="lead mb-4">
+                            Centralize timetable planning, classroom allocation, conflict detection, and approval workflows in one focused platform.
+                        </p>
+                        <div class="auth-highlights">
+                            <div class="auth-highlight-item">Role-based access for Admin, HOD, Faculty, and Viewer</div>
+                            <div class="auth-highlight-item">Genetic Algorithm timetable generation with clash analysis</div>
+                            <div class="auth-highlight-item">Readable exports, approvals, and operational analytics</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="card auth-card shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="mb-4">
+                            <h2 class="h3 mb-2 text-center">Login</h2>
+                            <p class="text-muted mb-0 text-center">Use your institution-issued account to continue.</p>
+                        </div>
+                        <form method="post" novalidate>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control form-control-lg" name="email" placeholder="name@college.edu" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control form-control-lg" name="password" placeholder="Enter your password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100 auth-submit">Login</button>
+                        </form>
+                        <p class="text-muted small mt-3 mb-0 text-center">Accounts are managed by the administrator.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">Review Timetable</h1>
+        <p class="text-muted mb-0">{{ department.code if department else '-' }} | Semester {{ variant.semester }} | Fitness {{ variant.fitness_score }}</p>
+    </div>
+    <div class="d-flex gap-2 no-print">
+        <form method="post" action="{{ url_for('hod.approve', variant_id=variant._id) }}">
+            <button class="btn btn-success">Approve</button>
+        </form>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table timetable-table full-grid">
+                        <thead><tr><th class="sticky-col">Period</th>{% for day in days %}<th>{{ day }}</th>{% endfor %}</tr></thead>
+                        <tbody>
+                            {% for period in periods %}
+                            <tr>
+                                <th class="sticky-col">Period {{ period }}<br><small>{{ period_times.get(period, '') }}</small></th>
+                                {% for day in days %}
+                                {% set cell = grid.get(period, {}).get(day) %}
+                                <td class="{% if cell %}dept-{{ cell.department_code|lower }}{% endif %} {% if cell and conflict_map.get(cell.slot_id|string) %}conflict-cell{% endif %}" {% if cell and conflict_map.get(cell.slot_id|string) %}title="{{ conflict_map.get(cell.slot_id|string)|join(' | ') }}"{% endif %}>
+                                    {% if cell %}
+                                        <strong>{{ cell.subject_name }}</strong><br>{{ cell.faculty_name }}<br>{{ cell.room_code }}
+                                    {% else %}
+                                        <span class="text-muted">Empty</span>
+                                    {% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5">Faculty Workload Summary</h2>
+                <table class="table table-sm">
+                    <thead><tr><th>Faculty</th><th>Hours</th><th>Limit</th></tr></thead>
+                    <tbody>
+                        {% for item in workload %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.hours }}</td>
+                            <td>{{ item.max_hours }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-muted text-center">No workload data.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Clashes & Violations</h2>
+                <p><strong>Clash Count:</strong> {{ variant.clash_count }}</p>
+                <ul class="small">
+                    {% for violation in variant.violations %}
+                    <li><span class="text-uppercase fw-semibold">{{ violation.severity }}</span>: {{ violation.message }}</li>
+                    {% else %}
+                    <li class="text-muted">No violations recorded.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('hod.reject', variant_id=variant._id) }}">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Reject Timetable</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Rejection Reason</label>
+                    <textarea class="form-control" rows="4" name="rejection_reason" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Submit Rejection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

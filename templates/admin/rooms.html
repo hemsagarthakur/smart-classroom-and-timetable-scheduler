@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="h4 mb-0">Add Room</h1>
+                    <form method="post" action="{{ url_for('admin.upload_excel', data_type='rooms') }}" enctype="multipart/form-data" class="d-flex gap-2">
+                        <input class="form-control form-control-sm" type="file" name="excel_file" accept=".xlsx" required>
+                        <button class="btn btn-outline-primary btn-sm">Upload Excel</button>
+                    </form>
+                </div>
+                <form method="post" data-validate>
+                    <div class="mb-3"><label class="form-label">Room Code</label><input class="form-control" name="room_code" required></div>
+                    <div class="mb-3"><label class="form-label">Capacity</label><input class="form-control" type="number" name="capacity" required></div>
+                    <div class="mb-3"><label class="form-label">Room Type</label><select class="form-select" name="room_type"><option value="classroom">Classroom</option><option value="lab">Lab</option></select></div>
+                    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="has_projector" id="proj"><label class="form-check-label" for="proj">Has Projector</label></div>
+                    <div class="mb-3">
+                        <label class="form-label">Department (optional/shared)</label>
+                        <select class="form-select" name="department_id">
+                            <option value="">Shared Room</option>
+                            {% for dept in departments %}<option value="{{ dept._id }}">{{ dept.code }} - {{ dept.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100">Save Room</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Rooms</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead><tr><th>Code</th><th>Capacity</th><th>Type</th><th>Projector</th><th>Dept</th><th></th></tr></thead>
+                        <tbody>
+                            {% for room in rooms_list %}
+                            <tr>
+                                <td>{{ room.room_code }}</td>
+                                <td>{{ room.capacity }}</td>
+                                <td class="text-capitalize">{{ room.room_type }}</td>
+                                <td>{{ 'Yes' if room.has_projector else 'No' }}</td>
+                                <td>{{ dept_map.get(room.department_id|string, 'Shared') }}</td>
+                                <td>
+                                    <form method="post" class="delete-form">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <input type="hidden" name="room_id" value="{{ room._id }}">
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="text-center text-muted">No rooms available.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 mb-4">Approved Timetables</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead><tr><th>Department</th><th>Semester</th><th>Approved On</th><th>Fitness</th><th></th></tr></thead>
+                <tbody>
+                    {% for item in variants %}
+                    <tr>
+                        <td>{{ departments.get(item.department_id|string).code if departments.get(item.department_id|string) else '-' }}</td>
+                        <td>{{ item.semester }}</td>
+                        <td>{{ item.approved_at.strftime('%d %b %Y %H:%M') if item.approved_at else '-' }}</td>
+                        <td>{{ item.fitness_score }}</td>
+                        <td><a class="btn btn-sm btn-primary" href="{{ url_for('viewer.timetable_view', variant_id=item._id) }}">View</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center text-muted">No approved timetables available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

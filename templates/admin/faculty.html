@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-xl-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="h4 mb-0">Add Faculty</h1>
+                    <form method="post" action="{{ url_for('admin.upload_excel', data_type='faculty') }}" enctype="multipart/form-data" class="d-flex gap-2">
+                        <input class="form-control form-control-sm" type="file" name="excel_file" accept=".xlsx" required>
+                        <button class="btn btn-outline-primary btn-sm">Upload Excel</button>
+                    </form>
+                </div>
+                <form method="post" data-validate>
+                    <div class="mb-3"><label class="form-label">Full Name</label><input class="form-control" name="name" required></div>
+                    <div class="mb-3"><label class="form-label">Email</label><input class="form-control" type="email" name="email" required></div>
+                    <div class="mb-3"><label class="form-label">Phone</label><input class="form-control" name="phone" required></div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" name="department_id" required>
+                            <option value="">Select</option>
+                            {% for dept in departments %}<option value="{{ dept._id }}">{{ dept.code }} - {{ dept.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subjects</label>
+                        <select class="form-select" name="subject_ids" multiple size="5" required>
+                            {% for subject in subjects %}<option value="{{ subject._id }}">{{ subject.code }} - {{ subject.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Available Days</label>
+                        {% for day in days %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="available_days" value="{{ day }}" id="day-{{ day }}">
+                            <label class="form-check-label" for="day-{{ day }}">{{ day }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col"><label class="form-label">Max Hours/Week</label><input class="form-control" type="number" name="max_hours_per_week" value="20" required></div>
+                        <div class="col"><label class="form-label">Avg Leaves/Month</label><input class="form-control" type="number" name="avg_leaves_per_month" value="2" required></div>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">Save Faculty</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Faculty Directory</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead><tr><th>Name</th><th>Dept</th><th>Subjects</th><th>Hours</th><th></th></tr></thead>
+                        <tbody>
+                            {% for item in faculty_list %}
+                            <tr>
+                                <td><strong>{{ item.name }}</strong><br><small>{{ item.email }}</small></td>
+                                <td>{{ dept_map.get(item.department_id|string, '-') }}</td>
+                                <td>
+                                    {% for subject_id in item.subject_ids %}
+                                        <span class="badge text-bg-light border">{{ subject_map.get(subject_id|string, 'N/A') }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td>{{ item.max_hours_per_week }}</td>
+                                <td>
+                                    <form method="post" class="delete-form">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <input type="hidden" name="faculty_id" value="{{ item._id }}">
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" class="text-center text-muted">No faculty available.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
