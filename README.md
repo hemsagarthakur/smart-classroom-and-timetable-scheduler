@@ -1,6 +1,11 @@
 # Smart Classroom & Timetable Scheduler
 ## SIH 2028 — Problem Statement Solution
 
+## 📸 Project Preview
+
+### 🔐 Login Page
+![Login Page](assets/login_dashboard.png)
+
 ## Problem Statement
 Higher Education institutions often face challenges in efficient class scheduling due to limited infrastructure, faculty constraints, elective courses, and overlapping departmental requirements. Manual timetable preparation leads to frequent clashes in classes, underutilized classrooms, uneven workload distribution, and dissatisfied students and faculty members. With the increasing adoption of multidisciplinary curricula and flexible learning under NEP 2020, the class scheduling process has become more complex and dynamic, requiring intelligent and adaptive solutions.
 
